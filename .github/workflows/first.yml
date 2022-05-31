@@ -25,3 +25,13 @@ jobs:
           CI: true
       - name: yarn build
         run: yarn build
+      - name: Notify slack
+        # Don't attempt to send Slack notifications on fork PRs which don't have access to secrets
+        id: slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: ./
+        with:
+          channel: slack-test
+          status: TESTING SUCCEEDED
+          color: good
