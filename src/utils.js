@@ -4,13 +4,19 @@ function buildSlackAttachments({ status, color, github }) {
   const { payload, ref, workflow, eventName } = github.context;
   const { owner, repo } = context.repo;
   const event = eventName;
-  // const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
-  const branch = event === 'pull_request' ? payload.pull_request.head.ref : payload.workflow_run.head_branch;
+  
+  let branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
 
   console.log('Context', github.context);
   console.log('Workflow run', payload.workflow_run);
-  // const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
-  const sha = event === 'pull_request' ? payload.pull_request.head.sha : payload.workflow_run.head_sha;
+
+  const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
+
+  if (payload.workflow_run) {
+    branch = payload.workflow_run.head_branch;
+    sha = payload.workflow_run.head_sha;
+  }
+
   const runId = parseInt(process.env.GITHUB_RUN_ID, 10);
 
   const referenceLink =
