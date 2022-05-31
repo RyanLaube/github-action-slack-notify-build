@@ -10,7 +10,7 @@ function buildSlackAttachments({ status, color, github }) {
   console.log('Context', github.context);
   console.log('Workflow run', payload.workflow_run);
 
-  const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
+  let sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
 
   if (payload.workflow_run) {
     branch = payload.workflow_run.head_branch;
